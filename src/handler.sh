@@ -11,6 +11,6 @@ TITLE="remains $(grep -Po '<!\-\-Дата выгрузки остатков: \K[
 cp ./data/remains.xml "./data/archive/$TITLE.xml"
 cp ./data/remains.json "./data/archive/$TITLE.json"
 
-s3cmd sync --skip-existing ./data s3://ftp-to-json
+s3cmd sync ./data s3://ftp-to-json
 
 echo "poweroff"
