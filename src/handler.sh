@@ -2,15 +2,31 @@
 
 mkdir -p ./data/archive
 
-curl --user usr300:Ftp20Nov\!\@30hi ftp://77.91.121.70/Remains.xml -o ./data/remains.xml
+TITLE_XML="./data/remains.xml"
+TITLE_JSON="./data/remains.json"
 
-TITLE="remains $(grep -Po '<!\-\-Дата выгрузки остатков: \K[^\->]+' ./data/remains.xml)"
+curl --user usr300:Ftp20Nov\!\@30hi ftp://77.91.121.70/Remains.xml -o $TITLE_XML
 
-./node_modules/.bin/xml-js ./data/remains.xml > "./data/remains.json"
+TITLE_ARCHIVE="remains $(grep -Po '<!\-\-Дата выгрузки остатков: \K[^\->]+' $TITLE_XML)"
 
-cp ./data/remains.xml "./data/archive/$TITLE.xml"
-cp ./data/remains.json "./data/archive/$TITLE.json"
+TITLE_ARCHIVE_XML="./data/archive/${TITLE_ARCHIVE}.xml"
+TITLE_ARCHIVE_JSON="./data/archive/${TITLE_ARCHIVE}.json"
 
-s3cmd sync ./data s3://ftp-to-json
+./node_modules/.bin/xml-js "$TITLE_XML" >"$TITLE_JSON"
 
-echo "poweroff"
+cp "$TITLE_XML" "$TITLE_ARCHIVE_XML"
+cp "$TITLE_JSON" "$TITLE_ARCHIVE_JSON"
+
+# s3cmude sync ./data s3://ftp-to-json
+if [ -s "${TITLE_JSON}" ]; then
+  s3cmd put --force "$TITLE_JSON" s3://ftp-to-json
+  s3cmd put --force "$TITLE_XML" s3://ftp-to-json
+  s3cmd put --force "$TITLE_ARCHIVE_JSON" s3://ftp-to-json
+  s3cmd put --force "$TITLE_ARCHIVE_XML" s3://ftp-to-json
+fi
+
+AUTOSTOP=$(cat /tmp/autostop1)
+
+if [ "${AUTOSTOP}" = "1" ]; then
+  sudo poweroff
+fi
