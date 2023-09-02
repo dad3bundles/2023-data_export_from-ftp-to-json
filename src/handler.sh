@@ -21,8 +21,8 @@ cp "$TITLE_JSON" "$TITLE_ARCHIVE_JSON"
 if [ -s "${TITLE_JSON}" ]; then
   s3cmd put --force "$TITLE_JSON" s3://ftp-to-json
   s3cmd put --force "$TITLE_XML" s3://ftp-to-json
-  s3cmd put --force "$TITLE_ARCHIVE_JSON" s3://ftp-to-json/archive
-  s3cmd put --force "$TITLE_ARCHIVE_XML" s3://ftp-to-json/archive
+  s3cmd put --force "$TITLE_ARCHIVE_JSON" s3://ftp-to-json/archive/
+  s3cmd put --force "$TITLE_ARCHIVE_XML" s3://ftp-to-json/archive/
 fi
 
 AUTOSTOP=$(cat /tmp/autostop)
