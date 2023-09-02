@@ -25,7 +25,7 @@ if [ -s "${TITLE_JSON}" ]; then
   s3cmd put --force "$TITLE_ARCHIVE_XML" s3://ftp-to-json
 fi
 
-AUTOSTOP=$(cat /tmp/autostop1)
+AUTOSTOP=$(cat /tmp/autostop)
 
 if [ "${AUTOSTOP}" = "1" ]; then
   sudo poweroff
