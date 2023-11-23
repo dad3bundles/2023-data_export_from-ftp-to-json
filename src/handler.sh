@@ -17,16 +17,18 @@ TITLE_ARCHIVE_JSON="./data/archive/${TITLE_ARCHIVE}.json"
 cp "$TITLE_XML" "$TITLE_ARCHIVE_XML"
 cp "$TITLE_JSON" "$TITLE_ARCHIVE_JSON"
 
-# s3cmude sync ./data s3://ftp-to-json
+# s3cmude sync ./data s3://$S3_BUCKET
 if [ -s "${TITLE_JSON}" ]; then
-  s3cmd put --force "$TITLE_JSON" s3://ftp-to-json/data/
-  s3cmd put --force "$TITLE_XML" s3://ftp-to-json/data/
-  s3cmd put --force "$TITLE_ARCHIVE_JSON" s3://ftp-to-json/data/archive/
-  s3cmd put --force "$TITLE_ARCHIVE_XML" s3://ftp-to-json/data/archive/
+  s3cmd put --force "$TITLE_JSON" s3://$S3_BUCKET/data/
+  s3cmd put --force "$TITLE_XML" s3://$S3_BUCKET/data/
+  s3cmd put --force "$TITLE_ARCHIVE_JSON" s3://$S3_BUCKET/data/archive/
+  s3cmd put --force "$TITLE_ARCHIVE_XML" s3://$S3_BUCKET/data/archive/
 fi
 
 AUTOSTOP=$(cat /tmp/autostop)
 
-if [ "${AUTOSTOP}" = "1" ]; then
-  sudo poweroff
+if [ "${AUTOSTOP}" = "0" ]; then
+  exit 0
 fi
+
+sudo poweroff
